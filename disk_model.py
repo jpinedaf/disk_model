@@ -1,5 +1,12 @@
 import math
 
+def Spectral_Profile( v, v_obs, Delta_v, nu_0):
+  # v is the velocity channels at which calculate the spectral profile [km/s]
+  # 
+  c = 2.99792458e8 #speed of light in [m/s]
+  phi = c/(math.sqrt(math.pi)*nu_0*Delta_v) * math.exp(-((v-v_obs)/Delta_v)^2)
+
+
 def disk_model(x, y, P):
 #
 #  x and y are in [au]. The disk is inclinated on the plane of the sky around the x-axis
@@ -26,10 +33,12 @@ def disk_model(x, y, P):
   r=math.sqrt( x^2 + (y/math.cos(i_d))^2 )
   phi = math.atan2( y, x)
 
-  Sigma=Sigma_c *(r/r_c)^(-gamma) * math.exp(-(r/r_c)^(2-gamma)) # Column density
-  T = T_10 *(r/10.)^(-q)
-  V = math.sqrt(G*Mstar/r) 
-  Hp= math.sqrt(k*T/(mu*Mh) *(r^3/(G*Mstar)))
+  Sigma=Sigma_c *(r/r_c)^(-gamma) * math.exp(-(r/r_c)^(2-gamma)) # Column density in [cm^-2]
+  T = T_10 *(r/10.)^(-q)   # [K]
+  V = 29.78e3* math.sqrt( Mstar /r ) 
+  #Hp= math.sqrt(k*T/(mu*Mh) *(r^3/(G*Mstar)))  
+  Hp= 4.562e8 * math.sqrt(T/mu_co *(r^3/Mstar) )   ## [m]
+
   rho=Sigma/( math.sqrt(2*pi) * Hp) * math.exp(-0.5*(z/Hp)^2)
   sigma_v=math.sqrt(sigma_NT^2 + 2*k*T/m_co)
 
