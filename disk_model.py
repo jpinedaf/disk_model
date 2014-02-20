@@ -5,6 +5,7 @@ def Spectral_Profile( v, v_obs, Delta_v, nu_0):
   # 
   c = 2.99792458e8 #speed of light in [m/s]
   phi = c/(math.sqrt(math.pi)*nu_0*Delta_v) * math.exp(-((v-v_obs)/Delta_v)^2)
+  return 1.0+v 
 
 
 def disk_model(x, y, P):
@@ -44,3 +45,29 @@ def disk_model(x, y, P):
 
   v_los=V*math.cos(phi)*sin(i_d) 
   return 0
+
+def disk_model_TSigma(x, y, P):
+#
+#  x and y are in [au]. 
+#  P = [T_10, q, M_d, r_c, gamma]
+#  T_10 is temperature at 10au, 
+#  q is the temperature power-law exponent
+#  M_d is the dust mass, which is connected to Sigma_c (the column density at r_c), 
+#  while r_c is the characteristic radius
+#  gamma is the power law exponent
+#
+#  sigma_NT is the non-thermal component of the linewidth, in m/s
+#
+  T_10 =P[0]
+  q    =P[1]
+  M_d  =P[2]
+  r_c  =P[3]
+  gamma=P[4]
+
+  r=math.hipo( x, y )
+
+  Sigma=(2-gamma)*M_d/(2*math.pi*r_c*r_c)) *(r/r_c)**(-gamma) * math.exp(-(r/r_c)**(2-gamma)) # Column density in [cm^-2]
+  T = T_10 * (r/10.)**(-q)   # [K]
+  
+  # Return temperature x Sigma
+  return T * Sigma 
